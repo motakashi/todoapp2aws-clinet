@@ -1,6 +1,11 @@
 import React from "react";
+import { TodoType } from "../types";
 
-const Todo = () => {
+type TodoProps = {
+  todo: TodoType;
+}
+
+const Todo = ({todo}: TodoProps) => {
   return (
     <div>
       {" "}
@@ -11,12 +16,11 @@ const Todo = () => {
               id="todo1"
               name="todo1"
               type="checkbox"
-              checked="{todo.isCompleted}"
               className="h-4 w-4 text-teal-600 focus:ring-teal-500
                 border-gray-300 rounded"
             />
             <label className="ml-3 block text-gray-900">
-              <span className="text-lg font-medium mr-2"> 散歩 </span>
+              <span className="text-lg font-medium mr-2"> {todo.title} </span>
             </label>
           </div>
           <div className="flex items-center space-x-2">
