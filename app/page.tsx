@@ -1,7 +1,21 @@
-import Image from "next/image";
+"use client";
 import Todo from "./components/Todo";
+import useSWR from "swr";
+
+async function fetcher(key: string) {
+  return fetch(key).then((res) => res.json());  
+}
 
 export default function Home() {
+  // const allTodos = await fetch("API", {cache: "force-cache"});
+
+  const {data, isLoading, error} = useSWR(
+    "http://localhost:8080/allTodos",
+    fetcher
+  )
+
+console.log(data);
+
   return (
 <div
   className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-32 py-4 px-4"
