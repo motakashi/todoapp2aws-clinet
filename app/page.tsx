@@ -13,16 +13,29 @@ export default function Home() {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const { data, isLoading, error } = useSWR(
+  const { data, isLoading, error, mutate } = useSWR(
     "http://localhost:8080/allTodos",
     fetcher
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (inputRef.current) {
-      console.log(inputRef.current.value);
+    const response = await fetch('http://localhost:8080/createTodo', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: inputRef.current?.value,
+        isCompleted: false,
+      }),
+    });
+
+    if (response.ok) {
+      const newTodo = await response.json();
+      mutate([...data, newTodo]);
+      if (inputRef.current?.value) {
+        inputRef.current.value = "";
+      }
     }
   };
 
