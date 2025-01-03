@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TodoType } from "../types";
+import { useTodos } from "../hooks/useTodos";
 
 type TodoProps = {
   todo: TodoType;
@@ -8,15 +9,30 @@ type TodoProps = {
 const Todo = ({ todo }: TodoProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedTitle, setEditedTitle] = useState<string>(todo.title);
+  const {todos, isLoading, error, mutate} = useTodos();
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     setIsEditing(!isEditing);
+    if (isEditing) {
+      const response = await fetch(`http://localhost:8080/editTodo/${todo.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({title: editedTitle}),
+      });
+  
+      if (response.ok) {
+        const editTodo = await response.json();
+        
+        mutate([...todos, editTodo]);
+        setEditedTitle("");
+      }
+    }
   };
 
   return (
     <div>
       {" "}
-      <li className="py-4">
+      <li className="py-4" key={todo.id}>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <input
