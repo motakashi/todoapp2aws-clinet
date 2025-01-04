@@ -23,7 +23,11 @@ const Todo = ({ todo }: TodoProps) => {
       if (response.ok) {
         const editTodo = await response.json();
         
-        mutate([...todos, editTodo]);
+        mutate(
+          todos.some((todo: TodoProps ) => todo.id === editTodo.id)
+          ? todos.map((todo: TodoProps) => todo.id === editTodo.id ? editTodo : todo) // 更新
+          : [...todos, editTodo] // 追加
+        );        
         setEditedTitle("");
       }
     }
